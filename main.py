@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/elenapolozova/PycharmProjects/hw16/data.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://///Users/elenapolozova/PycharmProjects/hw16/data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -116,14 +116,15 @@ for user in data.users:
     db.session.commit()
 
 
-@app.route("/users", methods=["GET, POST"])
+@app.route("/users", methods=["GET", "POST"])
 def get_users():
     if request.method == "GET":
         response = []
-        users = db.session.query(User).all()
+        users = User.query.all()
         for user in users:
             response.append(user.make_user_dict())
         return json.dumps(response, ensure_ascii=False)
+
     elif request.method == "POST":
         req_json = request.json
         new_offer = Offer(**req_json)
@@ -134,7 +135,7 @@ def get_users():
     return abort(404)
 
 
-@app.route("/users/<id>",  methods=["GET, PUT, DELETE"])
+@app.route("/users/<id>",  methods=["GET", "PUT", "DELETE"])
 def get_user_by_id(id: int):
     if request.method == "GET":
         user = db.session.query(User).get(id).make_user_dict()
@@ -165,7 +166,7 @@ def get_user_by_id(id: int):
     return abort(404)
 
 
-@app.route("/orders", methods=["GET, POST"])
+@app.route("/orders", methods=["GET", "POST"])
 def get_orders():
     if request.method == "GET":
         response = []
@@ -183,7 +184,7 @@ def get_orders():
     return abort(404)
 
 
-@app.route("/orders/<id>", methods=["GET, PUT, DELETE"])
+@app.route("/orders/<id>", methods=["GET", "PUT", "DELETE"])
 def get_order_by_id(id: int):
     if request.method == "GET":
         order = db.session.query(Order).get(id).make_order_dict()
@@ -199,14 +200,14 @@ def get_order_by_id(id: int):
     return abort(404)
 
 
-@app.route("/offers", methods=["GET, POST"])
+@app.route("/offers", methods=["GET", "POST"])
 def get_offers():
     if request.method == "GET":
         response = []
         offers = db.session.query(Offer).all()
         for offer in offers:
             response.append(offer.make_offer_dict())
-        return json.dumps(offers, ensure_ascii=False)
+        return json.dumps(response, ensure_ascii=False)
     elif request.method == "POST":
         req_json = request.json
         new_offer = Offer(**req_json)
@@ -217,7 +218,7 @@ def get_offers():
     return abort(404)
 
 
-@app.route("/offers/<id>", methods=["GET, PUT, DELETE"])
+@app.route("/offers/<id>", methods=["GET", "PUT", "DELETE"])
 def get_offer_by_id(id: int):
     if request.method == "GET":
         offer = db.session.query(Offer).get(id).make_offer_dict()
@@ -245,4 +246,4 @@ def get_offer_by_id(id: int):
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(port=5009)
