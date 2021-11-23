@@ -127,7 +127,7 @@ def get_users():
 
     elif request.method == "POST":
         req_json = request.json
-        new_offer = Offer(**req_json)
+        new_offer = User(**req_json)
         db.session.add(new_offer)
         db.session.commit()
         return "", 201
